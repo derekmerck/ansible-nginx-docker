@@ -50,8 +50,10 @@ http {
 
         {% if nginx_upstreams | default(false) %}{% for channel in nginx_upstreams -%}
         location {{ channel.path | default('/') }} {
-            proxy_pass http://{{ channel.name }}/;
-            proxy_pass_request_headers on;
+            proxy_pass                       http://{{ channel.name }}/;
+            proxy_pass_request_headers       on;
+            proxy_set_header Host            "$host/{{ channel.path | default('/') }}";
+            proxy_set_header X-Forwarded-For $remote_addr;
         }
         {% endfor %}{% endif %}
 
