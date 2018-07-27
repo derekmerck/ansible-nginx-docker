@@ -1,38 +1,90 @@
-Role Name
-=========
+Nginx Role for Redis in Docker
+================================
 
-A brief description of the role goes here.
+Derek Merck  
+<derek_merck@brown.edu>  
+Rhode Island Hospital and Brown University  
+Providence, RI  
 
-Requirements
-------------
+Configure and run a [Nginx](https://https://www.nginx.com) web server with reverse proxying in a Docker container.
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
-
-Role Variables
---------------
-
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+### Galaxy Roles
+
+- [geerlingguy.docker](https://github.com/geerlingguy/ansible-role-docker) to setup the docker environment
+- [geerlingguy.pip](https://github.com/geerlingguy/ansible-role-pip) to install Python reqs
+
+
+### Remote Node
+
+- [Docker][]
+- [docker-py][]
+
+[Docker]: https://www.docker.com
+[docker-py]: https://docker-py.readthedocs.io
+
+
+Role Variables
+--------------
+
+### Docker Image and Tag
+
+Always uses the official [Nginx][] image.
+
+[nginx]: https://hub.docker.com/_/nginx/
+
+Set the Nginx version tag.
+
+```yaml
+nginx_docker_image_tag:   "latest"
+```
+
+### Docker Container Configuration
+
+Always runs on ports 80 and 443 (if secured)
+
+```yaml
+nginx_container_name:    "nginx"
+nginx_config_dir:        "/opt/{{ nginx_container_name }}"
+```
+
+### Service Configuration
+
+See examples for format of upstream reverse proxies and security.
+
+```yaml
+nginx_upstreams:         []
+nginx_security:           {}
+```
+
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+```yaml
+- hosts: web_server
+  roles:
+    - role: derekmerck.nginx_docker
+      nginx_upstreams:
+        - name: upstream
+          path: /my_path/
+          pool:
+            - host: my_host
+              port: 80
+              path: /my_remote_path/
+            - host: another_host
+              port: 80
+              path: /my_remote_path/
+      nginx_security:
+        cert_dir:              "/opt/certs"
+        common_name:           "www.example.com"
+```
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
 
 License
 -------
 
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+MIT
