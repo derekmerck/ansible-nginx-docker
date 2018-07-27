@@ -72,17 +72,15 @@ Example Playbook
     - role: derekmerck.nginx_docker
       nginx_upstreams:
         - name: upstream
-          path: /my_path/
+          path: /my_path    # No trailing slash, rewrite host -> host/my_path
           pool:
-            - host: my_host
-              port: 80
-              path: /my_remote_path/
+            - port: 5000
+              # host defaults to "localhost"
             - host: another_host
               port: 80
-              path: /my_remote_path/
       nginx_security:
-        cert_dir:              "/opt/certs"
-        common_name:           "www.example.com"
+        cert_dir:    "/opt/certs"
+        common_name: "www.example.com"
 ```
 
 
