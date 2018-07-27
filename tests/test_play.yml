@@ -1,0 +1,11 @@
+---
+- hosts: '{{ test_host | default( "localhost") }}'
+
+  roles:
+    - role: '{{ "nginx-docker" if test_host=="vagrant" else "ansible-nginx-docker" }}'
+      nginx_upstreams_:
+        - upstream: orthanc  # unique name for the pool
+          path: /orthanc/
+          pool:
+            - port: 8041
+            - port: 8042

@@ -1,0 +1,7 @@
+---
+# defaults file for nginx-docker
+
+nginx_docker_image_tag:  "latest"
+
+nginx_container_name:    "nginx"
+nginx_config_dir:        "/opt/{{ nginx_container_name }}"

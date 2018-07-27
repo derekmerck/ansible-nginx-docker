@@ -1,0 +1,8 @@
+---
+# handlers file for nginx-docker
+
+- name: restart_nginx_container
+  docker_container:
+    name: "{{ nginx_container_name }}"
+    state: started
+    restart: true
