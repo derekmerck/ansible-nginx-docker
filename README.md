@@ -1,5 +1,7 @@
-Nginx Role for Redis in Docker
+Ansible Role for Nginx in Docker
 ================================
+
+[![Build Status](https://travis-ci.org/derekmerck/ansible-nginx-docker.svg?branch=master)](https://travis-ci.org/derekmerck/ansible-nginx-docker)
 
 Derek Merck  
 <derek_merck@brown.edu>  
