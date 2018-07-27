@@ -10,8 +10,7 @@ events {
 
 http {
 
-    # Each received instance <= 8M (MR is _big_)
-    # Must be larger for archive web portal
+    # TODO: Must be even larger for archive web portal
     client_max_body_size 10M;
     client_body_buffer_size 10M;
 
@@ -23,35 +22,35 @@ http {
                       '"$http_user_agent" "$http_x_forwarded_for"';
 
     access_log  /var/log/nginx/access.log  main;
-    sendfile        on;
+    sendfile           on;
     keepalive_timeout  65;
 
     {% if nginx_upstreams | default(false) %}{% for channel in nginx_upstreams -%}
-    upstream {{ channel.upstream }} {
+    upstream {{ channel.name }} {
         {% for balancer in channel.pool -%}
         server {{ balancer.host | default(dockerhost_ip) }}:{{ balancer.port }};
         {% endfor %}
+
     }
     {% endfor %}{% endif %}
-
 
     server {
         listen 80;
 
-        {%  if secure is defined -%}
+        {%  if nginx_security | default(false) -%}
         listen 443 ssl;
-        server_name {{ secure['common_name'] }};
-        ssl_certificate {{ secure['cert_dir'] }}/crt/{{ secure['common_name'] }}.crt;
-        ssl_certificate_key {{ secure['cert_dir'] }}/private/{{ secure['common_name'] }}.pem;
+        server_name {{ nginx_security['common_name'] }};
+        ssl_certificate {{ nginx_security['cert_dir'] }}/crt/{{ nginx_security['common_name'] }}.crt;
+        ssl_certificate_key {{ nginx_security['cert_dir'] }}/private/{{ nginx_security['common_name'] }}.pem;
 
         location ~ /.well-known {
-            root {{ secure['cert_dir'] }}/well-known;
+            root {{ nginx_security['cert_dir'] }}/well-known;
         }
         {%- endif %}
 
         {% if nginx_upstreams | default(false) %}{% for channel in nginx_upstreams -%}
         location {{ channel.path | default('/') }} {
-            proxy_pass http://{{ channel.upstream }}/;
+            proxy_pass http://{{ channel.name }}/;
             proxy_pass_request_headers on;
         }
         {% endfor %}{% endif %}

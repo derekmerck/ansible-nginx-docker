@@ -17,7 +17,7 @@
 
 - name:    "Create nginx config"
   template:
-    src:   templates/balanced.nginx.conf.j2
+    src:   templates/nginx.conf.j2
     dest:  "{{ nginx_config_dir }}/nginx.conf"
   become:  no
   notify: restart_nginx_container

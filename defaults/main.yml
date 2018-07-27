@@ -5,3 +5,20 @@ nginx_docker_image_tag:  "latest"
 
 nginx_container_name:    "nginx"
 nginx_config_dir:        "/opt/{{ nginx_container_name }}"
+
+nginx_upstreams:         []
+#nginx_upstreams:
+#  - name: upstream
+#    path: /my_path/
+#    pool:
+#      - host: my_host
+#        port: 80
+#        path: /my_remote_path/
+#      - host: another_host
+#        port: 80
+#        path: /my_remote_path/
+
+nginx_security:           {}
+#nginx_security:
+#  cert_dir:              "/opt/certs"
+#  common_name:           "www.example.com"
