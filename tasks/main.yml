@@ -47,9 +47,9 @@
       - "{{ nginx_config_dir }}/nginx.conf:/etc/nginx/nginx.conf:ro"
 #      - "{{ secure.cert_dir }}:{{ secure.cert_dir }}"
 
-    logging:
-      log_driver: "{{ log_driver | default( None ) }}"
-      log_options: "{{ log_options | default( [] ) }}"
+#    logging:
+#      log_driver: "{{ log_driver | default( None ) }}"
+#      log_options: "{{ log_options | default( [] ) }}"
 
   register: nginx_container
 
