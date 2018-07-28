@@ -1,6 +1,10 @@
 ---
 # tasks file for nginx-docker
 
+# ---------------------------
+# Get IP addr of bridge
+# ---------------------------
+
 - name: Get dockerhost
   shell: /sbin/ip route | awk '/docker0/ { print $NF }'
   register: dockerhost_response
@@ -14,6 +18,11 @@
     state: directory
     mode:  0777
   become:  yes
+
+
+# ---------------------------
+# Setup nginx
+# ---------------------------
 
 - name:    "Create nginx config"
   template:
@@ -37,6 +46,10 @@
     volumes:
       - "{{ nginx_config_dir }}/nginx.conf:/etc/nginx/nginx.conf:ro"
 #      - "{{ secure.cert_dir }}:{{ secure.cert_dir }}"
+
+    logging:
+      log_driver: "{{ log_driver | default( None ) }}"
+      log_options: "{{ log_options | default( [] ) }}"
 
   register: nginx_container
 

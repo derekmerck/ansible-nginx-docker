@@ -22,3 +22,4 @@ nginx_security:           {}
 #nginx_security:
 #  cert_dir:              "/opt/certs"
 #  common_name:           "www.example.com"
+

@@ -1,0 +1,6 @@
+log_driver: splunk
+log_options:
+  splunk-token:  "{{ splunk_log_tok }}"
+  splunk-url:    "http://{{ splunk_ip | default(dockerhost_ip) }}:8088"
+  splunk-index:  "{{ splunk_log_index | default("dockerized-services") }}"
+  splunk-source: "{{ role_name }}"
