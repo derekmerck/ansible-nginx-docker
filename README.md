@@ -59,7 +59,7 @@ See examples for format of upstream reverse proxies and security.
 
 ```yaml
 nginx_upstreams:         []
-nginx_security:           {}
+nginx_security:          {}
 ```
 
 
