@@ -1,9 +1,10 @@
 ---
 # tasks file for nginx-docker
 
-# ---------------------------
-# Get IP addr of bridge
-# ---------------------------
+
+#############################
+# Setup dockerhost
+#############################
 
 - name: Get dockerhost
   shell: /sbin/ip route | awk '/docker0/ { print $NF }'
@@ -12,26 +13,36 @@
 - set_fact:
     dockerhost_ip:    "{{ dockerhost_response.stdout }}"
 
-- name:    "Setup config folder"
+
+#############################
+# Create config directories
+#############################
+
+- debug:
+    var: nginx_secured
+
+- name: Make sure config directories exist
   file:
-    path:  "{{ nginx_config_dir }}"
+    path: "{{ item }}"
     state: directory
-    mode:  0777
-  become:  yes
+  with_list: '{{
+         [ nginx_config_dir ] +
+        ([ nginx_secured_cert_dir] if nginx_secured
+               else [])
+      }}'
 
 
-# ---------------------------
+#############################
 # Setup nginx
-# ---------------------------
+#############################
 
 - name:    "Create nginx config"
   template:
     src:   templates/nginx.conf.j2
     dest:  "{{ nginx_config_dir }}/nginx.conf"
-  become:  no
   notify: restart_nginx_container
 
-- name: "Pull Orthanc image - nginx:{{ nginx_docker_image_tag }}"
+- name: "Pull nginx image - nginx:{{ nginx_docker_image_tag }}"
   docker_image:
     name: 'nginx'
     tag:  '{{ nginx_docker_image_tag }}'
@@ -42,15 +53,11 @@
     image: "nginx:{{ nginx_docker_image_tag }}"
     state: started
     ports: ["80:80", "443:443"]
-#    links:        "{{ r_proxies.keys() }}"
-    volumes:
-      - "{{ nginx_config_dir }}/nginx.conf:/etc/nginx/nginx.conf:ro"
-#      - "{{ secure.cert_dir }}:{{ secure.cert_dir }}"
-
-#    logging:
-#      log_driver: "{{ log_driver | default( None ) }}"
-#      log_options: "{{ log_options | default( [] ) }}"
-
+    volumes: '{{
+         [ nginx_config_dir + "/nginx.conf:/etc/nginx/nginx.conf:ro" ] +
+        ([ nginx_secured_cert_dir + ":" + nginx_secured_cert_dir ] if nginx_secured
+               else [])
+      }}'
   register: nginx_container
 
 - meta: flush_handlers

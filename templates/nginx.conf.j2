@@ -37,14 +37,14 @@ http {
     server {
         listen 80;
 
-        {%  if nginx_security | default(false) -%}
+        {%  if nginx_secured | default(false) -%}
         listen 443 ssl;
-        server_name {{ nginx_security['common_name'] }};
-        ssl_certificate {{ nginx_security['cert_dir'] }}/crt/{{ nginx_security['common_name'] }}.crt;
-        ssl_certificate_key {{ nginx_security['cert_dir'] }}/private/{{ nginx_security['common_name'] }}.pem;
+        server_name {{ nginx_www_host }};
+        ssl_certificate {{ nginx_www_host }}/crt/{{ nginx_www_host }}.crt;
+        ssl_certificate_key {{ nginx_www_host }}/private/{{ nginx_www_host }}.pem;
 
         location ~ /.well-known {
-            root {{ nginx_security['cert_dir'] }}/well-known;
+            root {{ nginx_secured_cert_dir }}/well-known;
         }
         {%- endif %}
 

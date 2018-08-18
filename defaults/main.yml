@@ -18,8 +18,8 @@ nginx_upstreams:         []
 #        port: 80
 #        path: /my_remote_path/
 
-nginx_security:           {}
-#nginx_security:
-#  cert_dir:              "/opt/certs"
-#  common_name:           "www.example.com"
+nginx_www_host:        "www.example.com"
+
+nginx_secured:         False
+nginx_secured_cert_dir: /opt/certs
 
