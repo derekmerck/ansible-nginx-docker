@@ -39,12 +39,12 @@ http {
 
         {%  if nginx_secured | default(false) -%}
         listen 443 ssl;
-        server_name {{ nginx_www_host }};
-        ssl_certificate {{ nginx_www_host }}/crt/{{ nginx_www_host }}.crt;
-        ssl_certificate_key {{ nginx_www_host }}/private/{{ nginx_www_host }}.pem;
+        server_name {{ nginx_host_name }};
+        ssl_certificate {{ nginx_cert_dir }}/crt/{{ nginx_host_name }}.crt;
+        ssl_certificate_key {{ nginx_cert_dir }}/private/{{ nginx_common_name }}.pem;
 
         location ~ /.well-known {
-            root {{ nginx_secured_cert_dir }}/well-known;
+            root {{ nginx_cert_dir }}/.well-known;
         }
         {%- endif %}
 
