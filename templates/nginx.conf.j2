@@ -36,17 +36,18 @@ http {
 
     server {
         listen 80;
+        server_name {{ nginx_host_name }};
 
         {%  if nginx_secured | default(false) -%}
         listen 443 ssl;
-        server_name {{ nginx_host_name }};
-        ssl_certificate {{ nginx_cert_dir }}/crt/{{ nginx_host_name }}.crt;
-        ssl_certificate_key {{ nginx_cert_dir }}/private/{{ nginx_common_name }}.pem;
-
-        location ~ /.well-known {
-            root {{ nginx_cert_dir }}/.well-known;
-        }
+        ssl_certificate {{ nginx_cert_dir }}/crt/{{ nginx_host_name }}.pem;
+        ssl_certificate_key {{ nginx_cert_dir }}/private/{{ nginx_host_name }}.pem;
         {%- endif %}
+
+        location /.well-known/acme-challenge/ {
+            alias {{ nginx_cert_dir }}/.well-known/acme-challenge/;
+            try_files $uri =404;
+        }
 
         {% if nginx_upstreams | default(false) %}{% for channel in nginx_upstreams -%}
         location {{ channel.path | default('') }}/ {
