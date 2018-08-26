@@ -55,6 +55,10 @@
         ([ nginx_cert_dir + ":" + nginx_cert_dir ] if nginx_secured
                else [])
       }}'
+
+    log_driver:   "{{ nginx_logger }}"
+    log_options:  "{{ nginx_log_opts }}"
+
   register: nginx_container
 
 - meta: flush_handlers
