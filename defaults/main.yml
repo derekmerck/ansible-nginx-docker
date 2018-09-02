@@ -1,9 +1,11 @@
 ---
 # defaults file for nginx-docker
 
-data_dir:   "/data"
-config_dir: "/config"
-logger:     "json-file"
+data_dir:    "/data"
+config_dir:  "/config"
+logger:      "json-file"
+common_name: "example.com"
+public_host_name: "www"
 
 nginx_docker_image_tag:  "latest"
 
@@ -25,9 +27,10 @@ nginx_upstreams:         []
 #        port: 80
 #        path: /my_remote_path/
 
-nginx_common_name:     "example.com"
-nginx_host_name:       "www.{{ nginx_common_name }}"
-
 nginx_secured:         False
 nginx_cert_dir:       "{{ config_dir }}/certs"
+nginx_common_name:     "{{ common_name }}"
+nginx_public_host_name: "{{ public_host_name }}"
+nginx_host_name:       "{{ nginx_public_host }}.{{ nginx_common_name }}"
+
 
