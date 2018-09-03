@@ -1,19 +1,27 @@
 ---
 # defaults file for nginx-docker
 
-data_dir:    "/data"
-config_dir:  "/config"
-logger:      "json-file"
-common_name: "example.com"
-public_host_name: "www"
+# Global defaults
+# -----------------------------
+service_password:          "passw0rd!"
+data_dir:                  "/data"
+config_dir:                "/config"
+common_name:               "example.com"
+public_host_name:          "www"
+logger:                    "json-file"
+log_opts:                  {}
 
+# Docker image configuration
+# -----------------------------
 nginx_docker_image_tag:  "latest"
 
+# Docker container configuration
+# -----------------------------
 nginx_container_name:    "nginx"
 nginx_config_dir:        "{{ config_dir }}/{{ nginx_container_name }}"
 
-nginx_logger:            "{{ logger }}"
-nginx_log_opts:          "{{ {'splunk-source': nginx_container_name } if nginx_logger=='splunk' else {} }}"
+nginx_logger:           "{{ logger }}"
+nginx_log_opts:         '{{ log_opts | combine( {"splunk-source": nginx_container_name} ) if logger=="splunk" else log_opts }}'
 
 nginx_upstreams:         []
 #nginx_upstreams:
