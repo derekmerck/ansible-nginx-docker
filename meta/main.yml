@@ -16,5 +16,7 @@ galaxy_info:
 dependencies:
 
   - role: geerlingguy.docker
+    tags: deps
   - role: geerlingguy.pip
     pip_install_packages: docker
+    tags: deps
